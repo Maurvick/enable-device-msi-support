@@ -88,7 +88,13 @@ function Show-DeviceSelectionGUI {
     $disableUnknownButton = New-Object System.Windows.Forms.Button
     $disableUnknownButton.Location = New-Object System.Drawing.Point(170, 10)
     $disableUnknownButton.Size = New-Object System.Drawing.Size(150, 20)
-    $disableUnknownButton.Text = "Disable for Unknown Devices"
+    $disableUnknownButton.Text = "Disable All Unknown Devices"
+
+    # Create button to disable all devices
+    $disableAllButton = New-Object System.Windows.Forms.Button
+    $disableAllButton.Location = New-Object System.Drawing.Point(330, 10)
+    $disableAllButton.Size = New-Object System.Drawing.Size(120, 20)
+    $disableAllButton.Text = "Disable All Devices"
 
     # Create a DataGridView for devices
     $dataGridView = New-Object System.Windows.Forms.DataGridView
@@ -152,6 +158,17 @@ function Show-DeviceSelectionGUI {
         Write-Host "Set $unknownCount unknown devices to Disabled" -ForegroundColor Green
     })
 
+    # Disable All Devices button event handler
+    $disableAllButton.Add_Click({
+        $deviceCount = 0
+        foreach ($device in $Devices) {
+            $device.Action = "Disabled"
+            $deviceCount++
+        }
+        $script:filteredIndices = Update-DataGridView
+        Write-Host "Set $deviceCount devices to Disabled" -ForegroundColor Green
+    })
+
     # Create OK and Cancel buttons
     $okButton = New-Object System.Windows.Forms.Button
     $okButton.Location = New-Object System.Drawing.Point(600, 320)
@@ -190,6 +207,7 @@ function Show-DeviceSelectionGUI {
     # Add controls to the form
     $form.Controls.Add($checkBox)
     $form.Controls.Add($disableUnknownButton)
+    $form.Controls.Add($disableAllButton)
     $form.Controls.Add($dataGridView)
     $form.Controls.Add($okButton)
     $form.Controls.Add($cancelButton)
